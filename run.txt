@@ -1,0 +1,110 @@
+pre-requirements:
+Python latest version is giving some errors in installing Gensim and anothe library, so I recomend you to consider python 3.10 version
+
+* Open VSCode > Terminal(command prompt) and continur the below commands:
+    
+    - < makedirs Graphrag >
+    # This above command used to creatre a new directory with name < Graphrag >
+    
+    - < conda create -p ./graphragvenv python=3.10 >
+    # This above command used to create a new conda environment with name < ./graphragvenv > and install python with version 3.10
+
+    - < conda activate ./graphragvenv >
+    # This above command used to activate the created conda environment
+
+    - < python -m pip install --upgrade pip >
+    # This above command install and update pip
+    
+    - < python -m pip install --upgrade setuptools >
+    # This above command used to install and upgrade the 
+    # "setutools" package used by many other packages to handle their installation from source code (and tasks related to it).
+
+
+Step 1: Install graphrag
+    - < pip install graphrag >
+
+    - < python -m pip install --no-cache-dir --force-reinstall gensim >
+    # If installing graphrag raises any error, run this above command.
+    # And then install graphrag
+
+Step 2: Run below command, so that graphrag file is initialized and the yaml file is created 
+    - < python -m graphrag.index --init --root . >
+
+## Running the above command, the Graphrag is initiated and creates folders and files.
+
+Step 3: Creating the Deployements of llm model and embedding model in Azure OpenAI.
+    -- For embedding, model is text-embedding-small
+    -- For LLM model, (recomended)- GPT-4o.
+    ## They said even GPT 3 series also support, but I have tried with GPT-35-turbo-instruct is not working, raising some issues on creating the graphs at the end.
+    ## I recomend you to use GPT-4o, and model is very good at providing accurate answers
+    ## You can also check which models support for GrpahRAG from here : https://neo4j.com/deployment-center/
+
+After creating the deployements, you need to make some changes in the settings.yaml file
+
+Step 4: Configure OPENAI_API_KEY
+    # .env is also created when you initialize graphrag, you can configure your OPENAI_API_KEY there.
+
+Step 5: Make changes in settings.yaml file, now go to to llm section
+
+    -- You need to change the "api_key" from ${GRAPHRAG_API_KEY} to ${OPENAI_API_KEY} 
+    # Becuase we have OPENAI_API_KEY, and we have configure in .env
+
+    -- Change type from openai_chat to azure_openai_chat
+    # Becuase we are using Azure openai, not openai
+
+    -- Change model to the model name that you deployed in Azure OpenAI resource group. 
+    # In my case i have taken GPT-4o, you can try with other models as well.
+
+    -- Uncomment the api_base and replace that url with the endpoint of the azure openai resource group
+    # In my case <your azure openai resorce group name> is used, you can give any name to the instance.
+
+    -- Uncomment the api_version, no need to make changes in that, you can use the default api_version
+
+    -- Uncomment the deployement_name, and replace that with the deployement name you have given to the model while creating the deployement.
+    # In my case i have taken <deployement name of model>
+
+
+Step 6: Now in same settings.yaml file go to embeddings section and make some changes
+    
+    -- You need to change the "api_key" from ${GRAPHRAG_API_KEY} to ${OPENAI_API_KEY} 
+
+    -- Change type from openai_embeddings to azure_openai_embeddings
+    # Becuase we are using Azure openai, not openai
+
+    -- Change model to the model name that you deployed in Azure OpenAI resource group.
+    # In my case i have taken text-embedding-small, you can try with other models as well.
+
+    -- Uncomment the api_base and replace that url with the endpoint of the azure openai resource group
+    # In my case <your azure openai resource group name> is used, you can give any name to the instance.
+
+    -- api_version, you can comment that or you can uncomment and use that. It won't raise an error
+
+    -- Uncomment the deployement_name, and replace that witht the deployement you have given to the model while creating the deployement.
+    # In my case i have taken <deployement name of model>
+
+    That's it
+    Now save the changes that you amde in settings.yaml file
+
+step 7: Add input file:
+    # You need to add input text file, to do that first create a folder by runnig below command
+    - < makedirs input >
+
+    # Now in this input folder, you need to add the txt file(input text data file)
+
+Step 8: Run the GraphRAG to create Graphs on the data.
+    -  < python -m graphrag.index --root . >
+    # This command will run the graphrag and creates the parquet files.
+    # This will convert all you text data into entities and realatinoships graphs
+    # You can check that in output > last folder > artifacts folder (you have parquet files, which are converted data into graphs)
+
+Step 9: Evaluate our rag model
+    # Now we need to test our rag model, to do that we need to ask questions
+    # We are doing the things in comand prompt, we need to ask question to our model along with a command
+    # To ask question you need to write a command and then the question, write the below command and then your question
+    - < python -m graphrag.query --root . --method local/global "Your_Question" >
+    # When you run this command the model uses wither local(if written local) or global(if written gloabl) to answer the question.
+
+## To confirm the model is accurate, we can copy any word from the output of the model and find in the text file
+## To do that copy the word you need to check, 
+    * go to  the txt file(input file) and hit ctrl+f, a serach bar will open
+    * paste that copied word in this search bar, use the arrows to navigate to the words in the text file.
