@@ -42,10 +42,15 @@ Python latest version is giving some errors in installing Gensim and another lib
     ```sh
     python -m graphrag.index --init --root .
     ```
+    the command above is no more valid. I have used command below instead of the above and worked well
+   ```sh
+   graphrag init --root ./Graphrag
+
+```
 
     Running the above command, GraphRAG is initiated and creates folders and files.
 
-4. **Creating the Deployments of LLM Model and Embedding Model in Azure OpenAI:**
+5. **Creating the Deployments of LLM Model and Embedding Model in Azure OpenAI:**
 
     - For embedding, the model is `text-embedding-small`
     - For LLM model, recommended is `GPT-4o`.
@@ -55,11 +60,11 @@ Python latest version is giving some errors in installing Gensim and another lib
 
     After creating the deployments, you need to make some changes in the `settings.yaml` file.
 
-5. **Configure OPENAI_API_KEY:**
+6. **Configure OPENAI_API_KEY:**
 
     `.env` is also created when you initialize GraphRAG, you can configure your `OPENAI_API_KEY` there.
 
-6. **Make Changes in `settings.yaml` File:**
+7. **Make Changes in `settings.yaml` File:**
 
     Go to the `llm` section:
 
@@ -87,7 +92,7 @@ Python latest version is giving some errors in installing Gensim and another lib
 
     That's it. Now save the changes that you made in the `settings.yaml` file.
 
-7. **Add Input File:**
+8. **Add Input File:**
 
     You need to add an input text file, to do that first create a folder by running the below command:
 
@@ -97,7 +102,7 @@ Python latest version is giving some errors in installing Gensim and another lib
 
     Now in this `input` folder, you need to add the `.txt` file (input text data file).
 
-8. **Run GraphRAG to Create Graphs on the Data:**
+9. **Run GraphRAG to Create Graphs on the Data:**
 
     ```sh
     python -m graphrag.index --root .
@@ -105,7 +110,7 @@ Python latest version is giving some errors in installing Gensim and another lib
 
     This command will run the GraphRAG and create the parquet files. This will convert all your text data into entities and relationships graphs. You can check that in `output > last folder > artifacts folder` (you have parquet files, which are converted data into graphs).
 
-9. **Evaluate Our RAG Model:**
+10. **Evaluate Our RAG Model:**
 
     Now we need to test our RAG model, to do that we need to ask questions. We are doing things in the command prompt, we need to ask questions to our model along with a command. To ask a question, you need to write a command and then the question:
 
